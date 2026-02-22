@@ -1,24 +1,51 @@
-body { font-family:'Segoe UI',sans-serif; margin:0; padding:0; display:flex; transition:.3s; }
-#sidebar { width:220px; background:#4caf50; color:white; height:100vh; padding:20px; box-sizing:border-box; }
-#sidebar ul { list-style:none; padding:0; }
-#sidebar ul li { padding:10px; cursor:pointer; margin-bottom:5px; border-radius:5px; }
-#sidebar ul li:hover { background:#45a049; }
-#main { flex:1; padding:20px; transition:.3s; }
+/* Improved Styles for Click Functionality and Better Styling */
 
-.tabcontent { display:none; }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
 
-input, select, button { padding:8px; margin:5px; border-radius:5px; }
-button { cursor:pointer; background:#2196F3; color:white; border:none; transition:.2s; }
-button:hover { background:#1976D2; }
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
 
-.fachListe { margin-top:10px; list-style:none; padding:0; }
-.fachListe li { margin:5px 0; cursor:pointer; color:#000; }
-.fachListe li:hover { text-decoration:underline; }
+.nav {
+    background: #333;
+    color: #fff;
+    padding: 10px 0;
+}
 
-/* Dark Mode */
-body.dark { background:#121212; color:#eee; }
-body.dark #sidebar { background:#333; }
-body.dark button { background:#4caf50; }
-body.dark button:hover { background:#45a049; }
-body.dark input, body.dark select { background:#333; color:#eee; border:1px solid #555; }
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: inline-block;
+}
 
+.nav a:hover {
+    background: #575757;
+}
+
+.button {
+    display: inline-block;
+    font-size: 16px;
+    color: white;
+    background-color: #4CAF50;
+    text-align: center;
+    padding: 12px 20px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #45a049;
+}
+
+/* Additional styles here */
