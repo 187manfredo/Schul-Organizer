@@ -6,7 +6,7 @@ let faecherVorgabe = [
 "Mathematik","Deutsch","Englisch","Französisch","Latein","Spanisch",
 "Biologie","Chemie","Physik","Geschichte","Erdkunde",
 "Politik","Musik","Kunst","Sport",
-"Informatik","Religion","WerteNormen","WPU"
+"Informatik","Religion","Werte und Normen","WPU"
 ];
 
 let faecherHinzu = JSON.parse(localStorage.getItem("faecherHinzu")) || [];
