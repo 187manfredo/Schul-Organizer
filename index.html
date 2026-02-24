@@ -6,23 +6,6 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<!-- LOGIN -->
-<div id="loginBox">
-  <h2>🔐 Login</h2>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Passwort">
-  <button id="registerBtn">Registrieren</button>
-  <button id="loginBtn">Login</button>
-</div>
-
-<!-- APP -->
-<div id="appContent" style="display:none;">
-
-<button id="logoutBtn" style="position:absolute;top:10px;right:10px;">
-Logout
-</button>
-
 <div id="sidebar">
     <ul>
         <li onclick="openTab('hausaufgaben')">🏠 Hausaufgaben</li>
@@ -37,31 +20,53 @@ Logout
 
     <!-- Hausaufgaben -->
     <div id="hausaufgaben" class="tabcontent">
-        <select id="fachHA"></select>
-        <input type="text" id="aufgabe" placeholder="Hausaufgabe">
-        <input type="date" id="datum">
-        <button onclick="hinzufuegenHA()">Hinzufügen</button>
+        <div class="input-box">
+            <select id="fachHA"></select>
+            <input type="text" id="aufgabe" placeholder="Hausaufgabe">
+            <input type="date" id="datum">
+            <button onclick="hinzufuegenHA()">Hinzufügen</button>
+        </div>
         <ul id="listeHA"></ul>
     </div>
 
     <!-- Noten -->
     <div id="noten" class="tabcontent" style="display:none;">
         <button onclick="anzeigenAlleFaecher()">➕ Fach hinzufügen</button>
-        <ul id="alleFaecherListe"></ul>
+        <span id="closeFachListe" onclick="closeFachListe()" style="cursor:pointer; display:none;">❌</span>
+        <ul id="alleFaecherListe" class="fachListe"></ul>
         <ul id="hinzugefuegteFaecher"></ul>
         <div id="notenDetails"></div>
     </div>
 
     <!-- Klausuren -->
     <div id="klausuren" class="tabcontent" style="display:none;">
-        <select id="fachKlausur"></select>
-        <input type="text" id="klausurName" placeholder="Klausur">
-        <input type="date" id="klausurDatum">
-        <button onclick="hinzufuegenKlausur()">Hinzufügen</button>
+        <div class="input-box">
+            <select id="fachKlausur"></select>
+            <input type="text" id="klausurName" placeholder="Klausur">
+            <input type="date" id="klausurDatum">
+            <input type="number" id="klausurNote" placeholder="Note (optional)" step="0.1" min="1" max="6">
+            <button onclick="hinzufuegenKlausur()">Hinzufügen</button>
+        </div>
         <ul id="listeKlausuren"></ul>
     </div>
 
-</div>
+    <!-- Einstellungen -->
+    <div id="settings" class="tabcontent" style="display:none;">
+        <label class="switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider round"></span>
+        </label> Dark Mode
+        <hr>
+        <h3>Datenverwaltung</h3>
+        <button onclick="resetDaten()">Alles zurücksetzen</button>
+        <button onclick="exportBackup()">Backup exportieren</button>
+        <input type="file" id="importBackup" onchange="importBackup(event)">
+        <hr>
+        <h3>Benachrichtigungen (nur Einstellbar)</h3>
+        <label><input type="checkbox" id="benachrichtigungenHA"> Hausaufgaben-Benachrichtigungen</label><br>
+        <label><input type="checkbox" id="benachrichtigungenNoten"> Noten-Benachrichtigungen</label><br>
+        <label><input type="checkbox" id="benachrichtigungenKlausuren"> Klausuren-Benachrichtigungen</label>
+    </div>
 </div>
 
 <!-- Firebase separat -->
@@ -72,6 +77,7 @@ Logout
 
 </body>
 </html>
+
 
 
 
