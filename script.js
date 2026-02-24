@@ -4,10 +4,10 @@
 
 let faecherVorgabe = [
 "Mathematik","Deutsch","Englisch","Französisch","Latein","Spanisch",
-"Biologie","Chemie","Physik","Geschichte","Geographie",
-"Politik / Sozialkunde","Musik","Kunst","Sport",
-"Informatik / Computerwissenschaften",
-"Philosophie / Ethik / Religion","Wirtschaft / Recht"
+"Biologie","Chemie","Physik","Geschichte","Erdkunde",
+"Politik","Musik","Kunst","Sport",
+"Informatik",
+"Religion","WerteNormen"
 ];
 
 let faecherHinzu = JSON.parse(localStorage.getItem("faecherHinzu")) || [];
