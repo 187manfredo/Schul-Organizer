@@ -4,9 +4,10 @@
 
 let faecherVorgabe = [
 "Mathematik","Deutsch","Englisch","Französisch","Latein","Spanisch",
-"Biologie","Chemie","Physik","Geschichte","Erdkunde",
-"Politik","Musik","Kunst","Sport",
-"Informatik","Religion","Werte und Normen","WPU"
+"Biologie","Chemie","Physik","Geschichte","Geographie",
+"Politik / Sozialkunde","Musik","Kunst","Sport",
+"Informatik / Computerwissenschaften",
+"Philosophie / Ethik / Religion","Wirtschaft / Recht"
 ];
 
 let faecherHinzu = JSON.parse(localStorage.getItem("faecherHinzu")) || [];
@@ -31,24 +32,26 @@ function speichern(){
 // TABS
 // =====================
 
-function openTab(tab){
+window.openTab = function(tab){
     document.querySelectorAll(".tabcontent")
         .forEach(t => t.style.display="none");
 
     document.getElementById(tab).style.display="block";
 
-    if(tab=="hausaufgaben") fächerDropdownHA();
-    if(tab=="klausuren") fächerDropdownKlausur();
-    if(tab=="noten") anzeigenFaecher();
-}
+    if(tab==="hausaufgaben") faecherDropdownHA();
+    if(tab==="klausuren") faecherDropdownKlausur();
+    if(tab==="noten") anzeigenFaecher();
+};
 
 
 // =====================
 // HAUSAUFGABEN
 // =====================
 
-function fächerDropdownHA(){
+function faecherDropdownHA(){
     let sel = document.getElementById("fachHA");
+    if(!sel) return;
+
     sel.innerHTML="";
     faecherVorgabe.forEach(f=>{
         let opt=document.createElement("option");
@@ -58,7 +61,7 @@ function fächerDropdownHA(){
     });
 }
 
-function hinzufuegenHA(){
+window.hinzufuegenHA = function(){
     let fach=document.getElementById("fachHA").value;
     let aufgabe=document.getElementById("aufgabe").value;
     let datum=document.getElementById("datum").value;
@@ -68,83 +71,44 @@ function hinzufuegenHA(){
         return;
     }
 
-    aufgaben.push({fach,aufgabe,datum,erledigt:false,foto:null});
+    aufgaben.push({fach,aufgabe,datum,erledigt:false});
     speichern();
     anzeigenHA();
-}
+};
 
 function anzeigenHA(){
-
-    // 🔥 automatisch sortieren
-    aufgaben.sort((a,b)=> new Date(a.datum) - new Date(b.datum));
-
     let liste=document.getElementById("listeHA");
+    if(!liste) return;
+
+    aufgaben.sort((a,b)=> new Date(a.datum) - new Date(b.datum));
     liste.innerHTML="";
 
     aufgaben.forEach((a,i)=>{
         let li=document.createElement("li");
-
         li.innerHTML=`
-        <strong>${a.fach}</strong> - ${a.aufgabe} (${a.datum}) <br>
-        Foto: <input type="file" onchange="hochladenHA(event,${i})"><br>
-        <button onclick="erledigtHA(${i})" ${!a.foto?"disabled":""}>Erledigt</button>
+        <strong>${a.fach}</strong> - ${a.aufgabe} (${a.datum})
         <button onclick="loeschenHA(${i})">Löschen</button>
-        ${a.erledigt?"✅ Erledigt":""} 
-        ${a.foto?"✔ Foto hochgeladen":"❌ Kein Foto"}
         `;
-
         liste.appendChild(li);
     });
 }
 
-function hochladenHA(e,i){
-    let file=e.target.files[0];
-    if(file){
-        let reader=new FileReader();
-        reader.onload=ev=>{
-            aufgaben[i].foto=ev.target.result;
-            speichern();
-            anzeigenHA();
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-function erledigtHA(i){
-    if(!aufgaben[i].foto){
-        alert("Bitte Foto hochladen!");
-        return;
-    }
-    aufgaben[i].erledigt=true;
-    speichern();
-    anzeigenHA();
-}
-
-function loeschenHA(i){
+window.loeschenHA = function(i){
     aufgaben.splice(i,1);
     speichern();
     anzeigenHA();
-}
-
-
-// =====================
-// DARK MODE
-// =====================
-
-document.getElementById("darkModeToggle")
-.addEventListener("change",function(){
-    document.body.classList.toggle("dark",this.checked);
-});
+};
 
 
 // =====================
 // NOTEN
 // =====================
 
-function anzeigenAlleFaecher(){
+window.anzeigenAlleFaecher = function(){
     let liste=document.getElementById("alleFaecherListe");
+    if(!liste) return;
+
     liste.innerHTML="";
-    document.getElementById("closeFachListe").style.display="inline";
 
     faecherVorgabe.forEach(f=>{
         let li=document.createElement("li");
@@ -152,12 +116,7 @@ function anzeigenAlleFaecher(){
         li.onclick=()=>hinzufuegenFach(f);
         liste.appendChild(li);
     });
-}
-
-function closeFachListe(){
-    document.getElementById("alleFaecherListe").innerHTML="";
-    document.getElementById("closeFachListe").style.display="none";
-}
+};
 
 function hinzufuegenFach(fach){
     if(!faecherHinzu.includes(fach)){
@@ -170,6 +129,8 @@ function hinzufuegenFach(fach){
 
 function anzeigenFaecher(){
     let ul=document.getElementById("hinzugefuegteFaecher");
+    if(!ul) return;
+
     ul.innerHTML="";
 
     faecherHinzu.forEach(f=>{
@@ -182,7 +143,7 @@ function anzeigenFaecher(){
     });
 }
 
-function notenFachDetail(fach){
+window.notenFachDetail = function(fach){
 
     let html=`<h3>${fach}</h3>
     <select id="noteArt">
@@ -192,7 +153,7 @@ function notenFachDetail(fach){
     <input type="number" id="noteWert" 
            placeholder="Note" step="0.1" min="1" max="6">
     <button onclick="addNote('${fach}')">Hinzufügen</button>
-    <ul id="notenListe">`;
+    <ul>`;
 
     noten[fach].forEach((n,i)=>{
         html+=`
@@ -204,19 +165,18 @@ function notenFachDetail(fach){
 
     html+="</ul>";
 
-    // 🔥 Durchschnitt
-    let durchschnitt = "-";
+    let durchschnitt="-";
     if(noten[fach].length>0){
         let sum = noten[fach].reduce((a,b)=>a+b.note,0);
-        durchschnitt = (sum/noten[fach].length).toFixed(2);
+        durchschnitt=(sum/noten[fach].length).toFixed(2);
     }
 
     html+=`<p><strong>Durchschnitt:</strong> ${durchschnitt}</p>`;
 
     document.getElementById("notenDetails").innerHTML=html;
-}
+};
 
-function addNote(fach){
+window.addNote = function(fach){
     let n=parseFloat(document.getElementById("noteWert").value);
     let art=document.getElementById("noteArt").value;
 
@@ -229,22 +189,24 @@ function addNote(fach){
     speichern();
     anzeigenFaecher();
     notenFachDetail(fach);
-}
+};
 
-function loeschenNote(f,i){
+window.loeschenNote = function(f,i){
     noten[f].splice(i,1);
     speichern();
     anzeigenFaecher();
     notenFachDetail(f);
-}
+};
 
 
 // =====================
 // KLAUSUREN
 // =====================
 
-function fächerDropdownKlausur(){
+function faecherDropdownKlausur(){
     let sel=document.getElementById("fachKlausur");
+    if(!sel) return;
+
     sel.innerHTML="";
     faecherVorgabe.forEach(f=>{
         let opt=document.createElement("option");
@@ -254,11 +216,10 @@ function fächerDropdownKlausur(){
     });
 }
 
-function hinzufuegenKlausur(){
+window.hinzufuegenKlausur = function(){
     let f=document.getElementById("fachKlausur").value;
     let n=document.getElementById("klausurName").value;
     let d=document.getElementById("klausurDatum").value;
-    let note=parseFloat(document.getElementById("klausurNote").value);
 
     if(!n || !d){
         alert("Bitte Name und Datum ausfüllen!");
@@ -266,22 +227,22 @@ function hinzufuegenKlausur(){
     }
 
     if(!klausuren[f]) klausuren[f]=[];
-    klausuren[f].push({name:n,datum:d,note:note||null});
+    klausuren[f].push({name:n,datum:d});
 
     speichern();
     anzeigenKlausuren();
-}
+};
 
 function anzeigenKlausuren(){
     let div=document.getElementById("listeKlausuren");
+    if(!div) return;
+
     div.innerHTML="";
 
     Object.keys(klausuren).forEach(f=>{
         klausuren[f].forEach(k=>{
-            let noteText=k.note?`: Note ${k.note}`:"";
             let li=document.createElement("li");
-            li.textContent=
-            `${f} - ${k.name} (${k.datum})${noteText}`;
+            li.textContent=`${f} - ${k.name} (${k.datum})`;
             div.appendChild(li);
         });
     });
@@ -289,80 +250,15 @@ function anzeigenKlausuren(){
 
 
 // =====================
-// ERINNERUNG
+// INIT (WICHTIG)
 // =====================
 
-function checkKlausurenErinnerung(){
-    const heute = new Date();
-    const morgen = new Date();
-    morgen.setDate(heute.getDate()+1);
+document.addEventListener("DOMContentLoaded", function(){
 
-    Object.keys(klausuren).forEach(f=>{
-        klausuren[f].forEach(k=>{
-            const klausurDatum = new Date(k.datum);
-            if(klausurDatum.toDateString() === morgen.toDateString()){
-                alert(`Morgen Klausur in ${f}: ${k.name}`);
-            }
-        });
-    });
-}
+    anzeigenHA();
+    anzeigenFaecher();
+    faecherDropdownHA();
+    faecherDropdownKlausur();
+    anzeigenKlausuren();
 
-
-// =====================
-// DATENVERWALTUNG
-// =====================
-
-function resetDaten(){
-    if(confirm("Alle Daten wirklich löschen?")){
-        aufgaben=[];
-        klausuren={};
-        faecherHinzu=[];
-        noten={};
-        speichern();
-        anzeigenHA();
-        anzeigenKlausuren();
-        anzeigenFaecher();
-    }
-}
-
-function exportBackup(){
-    const data=JSON.stringify({aufgaben,klausuren,faecherHinzu,noten});
-    const blob=new Blob([data],{type:"application/json"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url;
-    a.download="backup.json";
-    a.click();
-    URL.revokeObjectURL(url);
-}
-
-function importBackup(e){
-    const file=e.target.files[0];
-    const reader=new FileReader();
-
-    reader.onload=ev=>{
-        const data=JSON.parse(ev.target.result);
-        aufgaben=data.aufgaben||[];
-        klausuren=data.klausuren||{};
-        faecherHinzu=data.faecherHinzu||[];
-        noten=data.noten||{};
-        speichern();
-        anzeigenHA();
-        anzeigenKlausuren();
-        anzeigenFaecher();
-    };
-
-    reader.readAsText(file);
-}
-
-
-// =====================
-// INIT
-// =====================
-
-anzeigenHA();
-anzeigenFaecher();
-fächerDropdownHA();
-fächerDropdownKlausur();
-anzeigenKlausuren();
-checkKlausurenErinnerung();
+});
